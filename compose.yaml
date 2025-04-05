@@ -1,0 +1,6 @@
+﻿services:
+  todolist:
+    image: todolist
+    build:
+      context: .
+      dockerfile: ToDoList/Dockerfile
