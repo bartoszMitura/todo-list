@@ -1,6 +1,24 @@
 ﻿services:
-  todolist:
-    image: todolist
+  backend:
     build:
       context: .
       dockerfile: ToDoList/Dockerfile
+    ports:
+      - "5000:8080"
+    networks:
+      - todonet
+
+  frontend:
+    build:
+      context: ./ToDoList-client
+      dockerfile: Dockerfile
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    networks:
+      - todonet
+
+networks:
+  todonet:
+    driver: bridge
