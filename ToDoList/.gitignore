@@ -1,4 +1,6 @@
-# .NET build folders
+# .NET Core backend specific .gitignore
+
+# .NET build artifacts
 bin/
 obj/
 
@@ -32,9 +34,19 @@ project.lock.json
 project.fragment.lock.json
 artifacts/
 
-# Angular/Node.js files
-node_modules/
-dist/
-.angular/
-npm-debug.log
-package-lock.json
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# User-specific secrets
+appsettings.Development.json
+*.pfx
+*.key
+*.Development.json
+launchSettings.json
+
+# VS Code
+.vscode/
+
+# Application logs
+logs/
+*.log
