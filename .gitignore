@@ -3,9 +3,30 @@
 # .NET build artifacts
 **/bin/
 **/obj/
+**/[Bb]in/
+**/[Oo]bj/
+
+# Force ignore all obj directory contents
+**/obj/**/*
+**/obj/**/*.json
+**/obj/**/*.cs
+**/obj/**/*.cache
+**/obj/**/*.editorconfig
+**/obj/**/*.props
+**/obj/**/*.targets
+**/obj/**/*.info
+
+# Assembly info files specifically
+**/AssemblyInfo.cs
+**/*.AssemblyInfo.cs
+**/*.AssemblyInfoInputs.cache
+**/*.AssemblyInfo.*.cs
 
 # Visual Studio and JetBrains Rider files
 .vs/
+**/.vs/
+**/_ReSharper*/
+**/_ReSharper.Caches/
 **/.idea/
 **/*.user
 **/*.userosscache
@@ -13,6 +34,8 @@
 **/*.userprefs
 **/*.sln.docstates
 **/*.sln.iml
+**/*.DotSettings.user
+**/*.DotSettings
 
 # Build results
 [Dd]ebug/
@@ -24,8 +47,6 @@ x86/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
 bld/
-[Bb]in/
-[Oo]bj/
 [Ll]og/
 [Ll]ogs/
 
@@ -33,6 +54,23 @@ bld/
 **/project.lock.json
 **/project.fragment.lock.json
 **/artifacts/
+**/*.nuget.dgspec.json
+**/*.nuget.g.props
+**/*.nuget.g.targets
+**/project.assets.json
+**/project.nuget.cache
+**/project.packagespec.json
+**/rider.project.*.info
+**/rider.project.restore.info
+**/packages/
+*.nupkg
+
+# Entity Framework Core
+**/Migrations/*.Designer.cs
+**/Migrations/*.resources
+
+# MSBuild Binary and Structured Log
+*.binlog
 
 # Visual Studio Code
 .vscode/*
@@ -55,6 +93,20 @@ bld/
 # Testing
 **/coverage/
 **/.nyc_output
+**/TestResults/
+**/*.trx
+**/*.coverage
+**/*.coveragexml
+
+# Database files
+**/*.mdf
+**/*.ldf
+**/*.ndf
+**/*.sqlite
+**/*.sqlite3
+**/*.db
+**/*.db-shm
+**/*.db-wal
 
 # Docker-related files
 **/.dockerignore
@@ -63,3 +115,11 @@ bld/
 # System Files
 **/.DS_Store
 **/Thumbs.db
+**/desktop.ini
+
+# Temporary files
+*~
+*.bak
+*.tmp
+*.temp
+*.log
