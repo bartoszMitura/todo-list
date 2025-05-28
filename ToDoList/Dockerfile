@@ -19,4 +19,13 @@ RUN dotnet publish "ToDoList.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "ToDoList.dll"]
+
+# Install the wait-for-it script to ensure database is ready before starting the application
+RUN apt-get update && apt-get install -y wget
+RUN wget -O /wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
+RUN chmod +x /wait-for-it.sh
+
+ENV ASPNETCORE_ENVIRONMENT=Docker
+
+# Use wait-for-it to ensure Postgres is ready before starting the application
+CMD /wait-for-it.sh postgres:5432 -t 60 -- dotnet ToDoList.dll
