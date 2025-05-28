@@ -13,6 +13,9 @@
 **/*.userprefs
 **/*.sln.docstates
 **/*.sln.iml
+**/_ReSharper*/
+**/[Tt]est[Rr]esult*
+**/*.DotSettings
 
 # Build results
 [Dd]ebug/
@@ -33,6 +36,10 @@ bld/
 **/project.lock.json
 **/project.fragment.lock.json
 **/artifacts/
+**/*.nuget.props
+**/*.nuget.targets
+**/.dotnet/
+**/global.json
 
 # Visual Studio Code
 .vscode/*
@@ -41,25 +48,72 @@ bld/
 !.vscode/launch.json
 !.vscode/extensions.json
 .history/*
+**/.ionide/
 
 # Angular/Node.js files
 **/node_modules/
 **/dist/
 **/.angular/
+**/.next/
+**/.nuxt/
 **/npm-debug.log*
 **/yarn-debug.log*
 **/yarn-error.log*
+**/.yarn-integrity
 **/.pnp
 **/.pnp.js
+**/.eslintcache
+**/.stylelintcache
 
 # Testing
 **/coverage/
 **/.nyc_output
+**/.sonarqube/
+**/TestResults/
 
 # Docker-related files
 **/.dockerignore
 **/docker-compose.override.yml
+**/*.env
+**/.env.*
+!**/.env.example
+
+# Secrets and configuration
+**/appsettings.*.json
+!**/appsettings.json
+!**/appsettings.Example.json
+**/*.[Pp]ublish.xml
+**/ServiceDependencies/
+
+# Database
+**/*.mdf
+**/*.ldf
+**/*.ndf
+**/*.sqlite
+**/*.sqlite3
+**/*.db
 
 # System Files
 **/.DS_Store
 **/Thumbs.db
+**/ehthumbs.db
+**/desktop.ini
+
+# Temporary files
+**/[Tt]emp/
+**/*.tmp
+**/*.bak
+**/*.swp
+**/*~
+**/*#
+
+# Logs
+**/logs/
+**/*.log
+**/npm-debug.log*
+
+# Build artifacts
+**/publish/
+**/PublishProfiles/
+**/*.pubxml
+**/*.publishsettings

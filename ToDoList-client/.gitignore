@@ -53,6 +53,8 @@ Thumbs.db
 # Build artifacts
 *.js.map
 *.css.map
+*.hot-update.js
+*.hot-update.json
 
 # Testing
 /karma-*
@@ -60,3 +62,13 @@ Thumbs.db
 /.jest/
 /jest-*
 .nyc_output/
+
+# Angular-specific
+/.angular/
+/.nx/
+.browserslistrc
+
+# Environment files
+/src/environments/*.ts
+!/src/environments/environment.ts
+!/src/environments/environment.sample.ts
