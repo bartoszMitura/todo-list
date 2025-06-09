@@ -17,6 +17,7 @@ namespace ToDoList.Models.Auth
 
         [Required]
         [Compare("Password")]
+        [System.Text.Json.Serialization.JsonPropertyName("confirmPassword")]
         public string ConfirmPassword { get; set; } = string.Empty;
 
         public string? FirstName { get; set; }

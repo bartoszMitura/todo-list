@@ -27,13 +27,21 @@ namespace ToDoList.Controllers
             _roleManager = roleManager;
             _jwtService = jwtService;
             _logger = logger;
-        }
-
+        }       
+        
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
+            _logger.LogInformation("Register request received for user: {Username}", model.UserName);
+            
             if (!ModelState.IsValid)
-                return BadRequest(new AuthResponse { Success = false, Message = "Invalid input data" });            // Check if user already exists
+            {
+                _logger.LogWarning("Invalid model state for registration: {Errors}", 
+                    string.Join(", ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
+                return BadRequest(new AuthResponse { Success = false, Message = "Invalid input data" });
+            }
+            
+            // Check if user already exists
             var userExists = await _userManager.FindByNameAsync(model.UserName);
             if (userExists != null)
                 return Conflict(new AuthResponse { Success = false, Message = "User already exists!" });

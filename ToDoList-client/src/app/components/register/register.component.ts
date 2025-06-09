@@ -87,8 +87,8 @@ export class RegisterComponent implements OnInit {
         setTimeout(() => {
           this.router.navigate(['/login']);
         }, 2000); // Redirect after 2 seconds
-      },
-      error: error => {
+      },      error: error => {
+        console.error('Registration error:', error);
         this.error = error.error?.message || 'Registration failed';
         this.loading = false;
       }

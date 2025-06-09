@@ -82,12 +82,10 @@ if (app.Environment.IsDevelopment() || Environment.GetEnvironmentVariable("ASPNE
     {
         var services = scope.ServiceProvider;
         var logger = services.GetRequiredService<ILogger<Program>>();
-        
-        try
-        {
-            // Ensure database is created
+          try
+        {            // Ensure database is created with all tables
             var dbContext = services.GetRequiredService<ApplicationDbContext>();
-            dbContext.Database.EnsureCreated();
+            await dbContext.Database.EnsureCreatedAsync();
             
             // Initialize roles
             var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
