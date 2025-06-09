@@ -1,0 +1,19 @@
+.unauthorized-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  
+  .alert {
+    max-width: 500px;
+    width: 100%;
+  }
+  
+  h2 {
+    margin-bottom: 20px;
+  }
+  
+  .btn {
+    margin-top: 20px;
+  }
+}
