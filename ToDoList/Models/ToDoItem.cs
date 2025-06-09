@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using ToDoList.Models.Auth;
 
 namespace ToDoList.Models
 {
@@ -13,5 +15,12 @@ namespace ToDoList.Models
         public bool IsCompleted { get; set; }
         
         public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+        
+        // Foreign key for user
+        public string? UserId { get; set; }
+        
+        // Navigation property to the user
+        [ForeignKey("UserId")]
+        public virtual ApplicationUser? User { get; set; }
     }
 }

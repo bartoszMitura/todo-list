@@ -117,3 +117,4 @@ bld/
 **/PublishProfiles/
 **/*.pubxml
 **/*.publishsettings
+ToDoList/obj/project.nuget.cache
