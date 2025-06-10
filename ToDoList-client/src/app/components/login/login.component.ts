@@ -3,13 +3,14 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router, ActivatedRoute, RouterModule, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
+import { MaterialModule } from '../../material.module';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterModule, RouterLink]
+  imports: [ReactiveFormsModule, CommonModule, RouterModule, RouterLink, MaterialModule]
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;

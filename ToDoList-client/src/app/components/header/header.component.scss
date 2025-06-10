@@ -1,12 +1,22 @@
-.navbar {
-  margin-bottom: 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+.spacer {
+  flex: 1 1 auto;
 }
 
-.nav-link {
-  cursor: pointer;
+.app-title {
+  font-size: 20px;
+  font-weight: 500;
 }
 
-button.btn {
-  cursor: pointer;
+.user-greeting {
+  display: flex;
+  align-items: center;
+  margin-right: 16px;
+  
+  mat-icon {
+    margin-right: 8px;
+  }
+}
+
+button {
+  margin-left: 8px;
 }

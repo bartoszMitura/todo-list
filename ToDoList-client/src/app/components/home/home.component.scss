@@ -1,13 +1,51 @@
 .home-container {
   padding: 20px;
-  
-  h1 {
-    margin-bottom: 20px;
-    color: #333;
-  }
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.welcome-card {
+  margin-bottom: 20px;
+}
+
+.header-icon {
+  font-size: 40px;
+  height: 40px;
+  width: 40px;
+}
+
+.tasks-container {
+  padding: 16px 0;
   
   h2 {
-    margin-top: 30px;
+    display: flex;
+    align-items: center;
+    margin-top: 16px;
     color: #444;
+    
+    mat-icon {
+      margin-right: 8px;
+    }
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 0;
+  text-align: center;
+  
+  .large-icon {
+    font-size: 64px;
+    height: 64px;
+    width: 64px;
+    margin-bottom: 16px;
+    color: #ccc;
+  }
+  
+  p {
+    margin-bottom: 20px;
+    color: #666;
   }
 }

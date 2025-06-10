@@ -1,9 +1,26 @@
 <div class="home-container">
-  <h1>Welcome to ToDoList App</h1>
-  <p>You're logged in as: <strong>{{ username }}</strong></p>
-  
-  <div class="mt-4">
-    <h2>Your Tasks</h2>
-    <p>Your tasks will appear here once implemented...</p>
-  </div>
+  <mat-card class="welcome-card">
+    <mat-card-header>
+      <div mat-card-avatar>
+        <mat-icon class="header-icon">assignment</mat-icon>
+      </div>
+      <mat-card-title>Welcome to ToDoList App</mat-card-title>
+      <mat-card-subtitle *ngIf="username">You're logged in as: <strong>{{ username }}</strong></mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="tasks-container">
+        <h2><mat-icon>list</mat-icon> Your Tasks</h2>
+        <mat-divider></mat-divider>
+        
+        <div class="empty-state">
+          <mat-icon class="large-icon">checklist</mat-icon>
+          <p>Your tasks will appear here once implemented...</p>
+          <button mat-raised-button color="primary">
+            <mat-icon>add</mat-icon>
+            Add Your First Task
+          </button>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>

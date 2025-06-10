@@ -4,11 +4,12 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { User } from '../../models/auth.model';
 import { Observable } from 'rxjs';
+import { MaterialModule } from '../../material.module';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterModule],
+  imports: [CommonModule, RouterLink, RouterModule, MaterialModule],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
