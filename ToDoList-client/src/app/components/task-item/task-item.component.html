@@ -1,0 +1,11 @@
+<div class="task-item" (click)="onToggleComplete()">
+  <mat-icon [ngClass]="{'completed-icon': todo.isCompleted}">
+    {{ todo.isCompleted ? 'check_circle' : 'radio_button_unchecked' }}
+  </mat-icon>
+  <div class="task-content">
+    <div class="task-title" [ngClass]="{'completed-text': todo.isCompleted}">{{ todo.title }}</div>
+    <div *ngIf="todo.createdAt" class="task-date">
+      Created: {{ todo.createdAt | date:'medium' }}
+    </div>
+  </div>
+</div>

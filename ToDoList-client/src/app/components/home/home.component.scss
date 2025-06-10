@@ -14,6 +14,40 @@
   width: 40px;
 }
 
+.create-todo-form {
+  padding: 16px 0;
+  
+  h3 {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    
+    mat-icon {
+      margin-right: 8px;
+      color: #3f51b5;
+    }
+  }
+  
+  .form-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    
+    .full-width {
+      flex: 1;
+    }
+    
+    button {
+      height: 56px;
+      min-width: 120px;
+    }
+  }
+}
+
+.section-divider {
+  margin: 32px 0;
+}
+
 .tasks-container {
   padding: 16px 0;
   
@@ -26,6 +60,18 @@
     mat-icon {
       margin-right: 8px;
     }
+  }
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 0;
+  
+  p {
+    margin-top: 16px;
+    color: #666;
   }
 }
 
@@ -48,4 +94,20 @@
     margin-bottom: 20px;
     color: #666;
   }
+}
+
+.task-list {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.task-list-item {
+  margin-bottom: 8px;
+  width: 100%;
+}
+
+.spinner {
+  margin-left: 8px;
+  display: inline-block;
 }
