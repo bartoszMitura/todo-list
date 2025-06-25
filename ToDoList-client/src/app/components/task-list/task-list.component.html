@@ -1,0 +1,104 @@
+<div class="task-list-container">
+  <mat-card class="task-list-card">
+    <mat-card-header>
+      <div mat-card-avatar>
+        <mat-icon class="header-icon">list</mat-icon>
+      </div>
+      <mat-card-title>Task List</mat-card-title>
+      <mat-card-subtitle *ngIf="username">You're logged in as: <strong>{{ username }}</strong></mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <!-- Create Todo Form -->
+      <form [formGroup]="todoForm" (ngSubmit)="createTodo()" class="create-todo-form">
+        <h3><mat-icon>add_task</mat-icon> Create a new task</h3>
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Task Title</mat-label>
+            <input matInput formControlName="title" placeholder="What needs to be done?">
+            <mat-icon matPrefix>edit</mat-icon>
+            <mat-error *ngIf="todoForm.controls['title'].errors?.['required']">
+              Title is required
+            </mat-error>
+            <mat-error *ngIf="todoForm.controls['title'].errors?.['minlength']">
+              Title must be at least 3 characters
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Start Date & Time</mat-label>
+            <input matInput [matDatepicker]="startPicker" formControlName="startTime">
+            <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+            <mat-datepicker #startPicker></mat-datepicker>
+            <mat-icon matPrefix>event</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>End Date & Time</mat-label>
+            <input matInput [matDatepicker]="endPicker" formControlName="endTime">
+            <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+            <mat-datepicker #endPicker></mat-datepicker>
+            <mat-icon matPrefix>event</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Category</mat-label>
+            <input matInput formControlName="category" placeholder="Task category">
+            <mat-icon matPrefix>category</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="status">
+              <mat-option [value]="0">Not Started</mat-option>
+              <mat-option [value]="1">In Progress</mat-option>
+              <mat-option [value]="2">Completed</mat-option>
+              <mat-option [value]="3">Delayed</mat-option>
+              <mat-option [value]="4">Cancelled</mat-option>
+            </mat-select>
+            <mat-icon matPrefix>flag</mat-icon>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-actions">
+          <button mat-raised-button color="primary" type="submit" [disabled]="submitting || todoForm.invalid">
+            <mat-icon>add</mat-icon>
+            <span *ngIf="!submitting">Add Task</span>
+            <mat-spinner *ngIf="submitting" diameter="20" class="spinner"></mat-spinner>
+          </button>
+        </div>
+      </form>
+
+      <mat-divider class="section-divider"></mat-divider>
+      
+      <!-- Task List -->
+      <div class="tasks-container">
+        <h2><mat-icon>list</mat-icon> Your Tasks</h2>
+        <mat-divider></mat-divider>
+        
+        <div *ngIf="loading" class="loading-container">
+          <mat-spinner diameter="40"></mat-spinner>
+          <p>Loading tasks...</p>
+        </div>
+        
+        <div *ngIf="!loading && todos.length === 0" class="empty-state">
+          <mat-icon class="large-icon">checklist</mat-icon>
+          <p>You don't have any tasks yet. Create your first task above!</p>
+        </div>
+        
+        <div *ngIf="!loading && todos.length > 0" class="task-list">
+          <app-task-item 
+            *ngFor="let todo of todos" 
+            [todo]="todo"
+            (toggleComplete)="updateTaskStatus($event)"
+            class="task-list-item">
+          </app-task-item>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
