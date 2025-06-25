@@ -1,13 +1,15 @@
-<div class="home-container">
-  <mat-card class="welcome-card">
+<div class="task-list-container">
+  <mat-card class="task-list-card">
     <mat-card-header>
       <div mat-card-avatar>
-        <mat-icon class="header-icon">assignment</mat-icon>
+        <mat-icon class="header-icon">list</mat-icon>
       </div>
-      <mat-card-title>Welcome to ToDoList App</mat-card-title>
+      <mat-card-title>Task List</mat-card-title>
       <mat-card-subtitle *ngIf="username">You're logged in as: <strong>{{ username }}</strong></mat-card-subtitle>
     </mat-card-header>
-    <mat-card-content>      <!-- Create Todo Form -->
+    
+    <mat-card-content>
+      <!-- Create Todo Form -->
       <form [formGroup]="todoForm" (ngSubmit)="createTodo()" class="create-todo-form">
         <h3><mat-icon>add_task</mat-icon> Create a new task</h3>
         <div class="form-row">
@@ -87,7 +89,8 @@
           <mat-icon class="large-icon">checklist</mat-icon>
           <p>You don't have any tasks yet. Create your first task above!</p>
         </div>
-          <div *ngIf="!loading && todos.length > 0" class="task-list">
+        
+        <div *ngIf="!loading && todos.length > 0" class="task-list">
           <app-task-item 
             *ngFor="let todo of todos" 
             [todo]="todo"

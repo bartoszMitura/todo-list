@@ -73,10 +73,13 @@ namespace ToDoList.Controllers
                 
             if (existingItem.UserId != userId)
                 return Forbid();
-                
-            // Transfer user-editable properties
+                  // Transfer user-editable properties
             existingItem.Title = todoItem.Title;
             existingItem.IsCompleted = todoItem.IsCompleted;
+            existingItem.StartTime = todoItem.StartTime;
+            existingItem.EndTime = todoItem.EndTime;
+            existingItem.Category = todoItem.Category;
+            existingItem.Status = todoItem.Status;
             
             try
             {

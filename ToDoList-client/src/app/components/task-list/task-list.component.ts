@@ -9,17 +9,18 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TaskItemComponent } from '../task-item/task-item.component';
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-task-list',
   standalone: true,
   imports: [CommonModule, MaterialModule, ReactiveFormsModule, TaskItemComponent],
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  templateUrl: './task-list.component.html',
+  styleUrls: ['./task-list.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class TaskListComponent implements OnInit {
   todoForm: FormGroup;
   todos: TodoItem[] = [];
   loading = false;
   submitting = false;
+  
   constructor(
     private authService: AuthService,
     private todoService: TodoService,
@@ -59,7 +60,9 @@ export class HomeComponent implements OnInit {
         });
       }
     });
-  }  createTodo(): void {
+  }
+  
+  createTodo(): void {
     // Stop if form is invalid
     if (this.todoForm.invalid) {
       return;
@@ -79,7 +82,13 @@ export class HomeComponent implements OnInit {
     this.todoService.createTodo(newTodo).subscribe({
       next: (result) => {
         this.todos.unshift(result); // Add to the beginning of the array
-        this.todoForm.reset();
+        this.todoForm.reset({
+          title: '',
+          startTime: null,
+          endTime: null,
+          category: '',
+          status: 0
+        });
         this.submitting = false;
         this.snackBar.open('Task created successfully', 'Close', {
           duration: 3000,

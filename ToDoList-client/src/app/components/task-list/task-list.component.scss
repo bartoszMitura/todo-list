@@ -1,10 +1,10 @@
-.home-container {
+.task-list-container {
   padding: 20px;
   max-width: 800px;
   margin: 0 auto;
 }
 
-.welcome-card {
+.task-list-card {
   margin-bottom: 20px;
 }
 
@@ -45,38 +45,25 @@
     justify-content: flex-end;
     margin-top: 8px;
   }
-  
-  .form-row {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    
-    .full-width {
-      flex: 1;
-    }
-    
-    button {
-      height: 56px;
-      min-width: 120px;
-    }
-  }
+}
+
+.full-width {
+  width: 100%;
 }
 
 .section-divider {
-  margin: 32px 0;
+  margin: 24px 0;
 }
 
 .tasks-container {
-  padding: 16px 0;
-  
   h2 {
     display: flex;
     align-items: center;
-    margin-top: 16px;
-    color: #444;
+    margin-bottom: 16px;
     
     mat-icon {
       margin-right: 8px;
+      color: #3f51b5;
     }
   }
 }
@@ -85,7 +72,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 32px 0;
+  justify-content: center;
+  padding: 48px 0;
   
   p {
     margin-top: 16px;
@@ -93,39 +81,45 @@
   }
 }
 
+.task-list {
+  margin-top: 16px;
+}
+
+.task-list-item {
+  margin-bottom: 8px;
+  display: block;
+}
+
 .empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 40px 0;
+  justify-content: center;
+  padding: 48px 0;
   text-align: center;
+  color: #666;
   
   .large-icon {
     font-size: 64px;
     height: 64px;
     width: 64px;
+    color: #ddd;
     margin-bottom: 16px;
-    color: #ccc;
   }
-  
-  p {
-    margin-bottom: 20px;
-    color: #666;
-  }
-}
-
-.task-list {
-  margin-top: 16px;
-  display: flex;
-  flex-direction: column;
-}
-
-.task-list-item {
-  margin-bottom: 8px;
-  width: 100%;
 }
 
 .spinner {
-  margin-left: 8px;
   display: inline-block;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+@media (max-width: 600px) {
+  .form-row {
+    flex-direction: column;
+    
+    mat-form-field {
+      width: 100%;
+    }
+  }
 }
