@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ToDoList.Data;
@@ -11,9 +12,11 @@ using ToDoList.Data;
 namespace ToDoList.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250624164017_AddTodoItemExtendedProperties")]
+    partial class AddTodoItemExtendedProperties
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -264,8 +267,6 @@ namespace ToDoList.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Category");
-
                     b.HasIndex("UserId");
 
                     b.ToTable("TodoItems");
@@ -274,7 +275,7 @@ namespace ToDoList.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 6, 24, 16, 41, 29, 561, DateTimeKind.Utc).AddTicks(9840),
+                            CreatedAt = new DateTime(2025, 6, 24, 16, 40, 15, 756, DateTimeKind.Utc).AddTicks(2557),
                             IsCompleted = false,
                             Status = 0,
                             Title = "Learn Docker"
@@ -282,7 +283,7 @@ namespace ToDoList.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 6, 24, 16, 41, 29, 562, DateTimeKind.Utc).AddTicks(1665),
+                            CreatedAt = new DateTime(2025, 6, 24, 16, 40, 15, 756, DateTimeKind.Utc).AddTicks(4031),
                             IsCompleted = false,
                             Status = 0,
                             Title = "Learn Entity Framework"
@@ -290,9 +291,9 @@ namespace ToDoList.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2025, 6, 24, 16, 41, 29, 562, DateTimeKind.Utc).AddTicks(1669),
+                            CreatedAt = new DateTime(2025, 6, 24, 16, 40, 15, 756, DateTimeKind.Utc).AddTicks(4036),
                             IsCompleted = false,
-                            Status = 1,
+                            Status = 0,
                             Title = "Build a ToDo List App"
                         });
                 });

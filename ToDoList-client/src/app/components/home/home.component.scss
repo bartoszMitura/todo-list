@@ -30,6 +30,24 @@
   
   .form-row {
     display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    
+    mat-form-field {
+      flex: 1;
+      min-width: 200px;
+    }
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 8px;
+  }
+  
+  .form-row {
+    display: flex;
     align-items: center;
     gap: 16px;
     

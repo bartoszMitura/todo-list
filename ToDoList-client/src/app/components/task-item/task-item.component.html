@@ -1,11 +1,38 @@
-<div class="task-item" (click)="onToggleComplete()">
-  <mat-icon [ngClass]="{'completed-icon': todo.isCompleted}">
-    {{ todo.isCompleted ? 'check_circle' : 'radio_button_unchecked' }}
-  </mat-icon>
-  <div class="task-content">
+<div class="task-item">
+  <div class="task-header">
+    <mat-icon [ngClass]="{'completed-icon': todo.isCompleted}" (click)="onToggleComplete()">
+      {{ todo.isCompleted ? 'check_circle' : 'radio_button_unchecked' }}
+    </mat-icon>
     <div class="task-title" [ngClass]="{'completed-text': todo.isCompleted}">{{ todo.title }}</div>
+    <div class="task-status" [ngClass]="getStatusClass()">
+      {{ todo.status === 0 ? 'Not Started' : 
+         todo.status === 1 ? 'In Progress' : 
+         todo.status === 2 ? 'Completed' : 
+         todo.status === 3 ? 'Delayed' : 
+         todo.status === 4 ? 'Cancelled' : 'Unknown' }}
+    </div>
+  </div>
+  
+  <div class="task-details">
+    <div *ngIf="todo.category" class="task-category">
+      <mat-icon>category</mat-icon>
+      <span>{{ todo.category }}</span>
+    </div>
+    
+    <div class="task-dates">
+      <div *ngIf="todo.startTime" class="task-date">
+        <mat-icon>play_circle</mat-icon>
+        <span>Start: {{ todo.startTime | date:'medium' }}</span>
+      </div>
+      <div *ngIf="todo.endTime" class="task-date">
+        <mat-icon>stop_circle</mat-icon>
+        <span>End: {{ todo.endTime | date:'medium' }}</span>
+      </div>
+    </div>
+    
     <div *ngIf="todo.createdAt" class="task-date">
-      Created: {{ todo.createdAt | date:'medium' }}
+      <mat-icon>event_note</mat-icon>
+      <span>Created: {{ todo.createdAt | date:'medium' }}</span>
     </div>
   </div>
 </div>

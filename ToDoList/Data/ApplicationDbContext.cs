@@ -14,15 +14,19 @@ namespace ToDoList.Data
         }
 
         public DbSet<TodoItem> TodoItems { get; set; } = null!;
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-              // Seed data if needed
+
+            // Configure TodoItem
+            modelBuilder.Entity<TodoItem>()
+                .HasIndex(t => t.Category);
+
+            // Seed data if needed
             modelBuilder.Entity<TodoItem>().HasData(
-                new TodoItem { Id = 1, Title = "Learn Docker", IsCompleted = false },
-                new TodoItem { Id = 2, Title = "Learn Entity Framework", IsCompleted = false },
-                new TodoItem { Id = 3, Title = "Build a ToDo List App", IsCompleted = false }
+                new TodoItem { Id = 1, Title = "Learn Docker", IsCompleted = false, Status = Models.TaskStatus.NotStarted },
+                new TodoItem { Id = 2, Title = "Learn Entity Framework", IsCompleted = false, Status = Models.TaskStatus.NotStarted },
+                new TodoItem { Id = 3, Title = "Build a ToDo List App", IsCompleted = false, Status = Models.TaskStatus.InProgress }
             );
             modelBuilder.Entity<IdentityUserRole<string>>().ToTable("UserRoles");
             modelBuilder.Entity<IdentityUserClaim<string>>().ToTable("UserClaims");

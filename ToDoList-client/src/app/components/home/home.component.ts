@@ -20,7 +20,6 @@ export class HomeComponent implements OnInit {
   todos: TodoItem[] = [];
   loading = false;
   submitting = false;
-
   constructor(
     private authService: AuthService,
     private todoService: TodoService,
@@ -28,7 +27,11 @@ export class HomeComponent implements OnInit {
     private snackBar: MatSnackBar
   ) {
     this.todoForm = this.formBuilder.group({
-      title: ['', [Validators.required, Validators.minLength(3)]]
+      title: ['', [Validators.required, Validators.minLength(3)]],
+      startTime: [null],
+      endTime: [null],
+      category: [''],
+      status: [0] // 0 = NotStarted in the TaskStatus enum
     });
   }
 
@@ -56,8 +59,7 @@ export class HomeComponent implements OnInit {
         });
       }
     });
-  }
-  createTodo(): void {
+  }  createTodo(): void {
     // Stop if form is invalid
     if (this.todoForm.invalid) {
       return;
@@ -65,9 +67,14 @@ export class HomeComponent implements OnInit {
 
     const newTodo: TodoItem = {
       title: this.todoForm.value.title,
-      isCompleted: false
+      isCompleted: false,
+      startTime: this.todoForm.value.startTime ? new Date(this.todoForm.value.startTime) : undefined,
+      endTime: this.todoForm.value.endTime ? new Date(this.todoForm.value.endTime) : undefined,
+      category: this.todoForm.value.category || '',
+      status: this.todoForm.value.status
     };
 
+    console.log('Sending todo:', newTodo); // Debug log to see what's being sent
     this.submitting = true;
     this.todoService.createTodo(newTodo).subscribe({
       next: (result) => {
