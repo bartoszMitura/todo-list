@@ -7,6 +7,8 @@ import { TodoItem } from '../../models/todo.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TaskItemComponent } from '../task-item/task-item.component';
 import { RouterLink } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-task-list',
@@ -22,7 +24,8 @@ export class TaskListComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private todoService: TodoService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -76,23 +79,39 @@ export class TaskListComponent implements OnInit {
   }
   
   deleteTask(id: number): void {
-    if (confirm('Are you sure you want to delete this task?')) {
-      this.todoService.deleteTodo(id).subscribe({
-        next: () => {
-          // Remove the todo from the list
-          this.todos = this.todos.filter(t => t.id !== id);
-          this.snackBar.open('Task deleted successfully', 'Close', {
-            duration: 3000
-          });
-        },
-        error: (error) => {
-          console.error('Error deleting todo:', error);
-          this.snackBar.open('Failed to delete task', 'Close', {
-            duration: 3000,
-            panelClass: 'error-snackbar'
-          });
-        }
-      });
-    }
+    // Open confirmation dialog
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+      panelClass: 'confirmation-dialog',
+      data: {
+        title: 'Delete Task',
+        message: 'Are you sure you want to delete this task? This action cannot be undone.',
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+        isWarning: true
+      }
+    });
+
+    // Subscribe to dialog result
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.todoService.deleteTodo(id).subscribe({
+          next: () => {
+            // Remove the todo from the list
+            this.todos = this.todos.filter(t => t.id !== id);
+            this.snackBar.open('Task deleted successfully', 'Close', {
+              duration: 3000
+            });
+          },
+          error: (error) => {
+            console.error('Error deleting todo:', error);
+            this.snackBar.open('Failed to delete task', 'Close', {
+              duration: 3000,
+              panelClass: 'error-snackbar'
+            });
+          }
+        });
+      }
+    });
   }
 }

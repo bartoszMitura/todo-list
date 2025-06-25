@@ -14,3 +14,18 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   background: #4caf50;
   color: white;
 }
+
+/* Dialog styles */
+.confirmation-dialog .mat-mdc-dialog-container {
+  padding: 24px;
+}
+
+.mat-mdc-dialog-actions {
+  padding: 16px 0 8px !important;
+  margin-bottom: 0 !important;
+}
+
+.mat-mdc-dialog-actions button {
+  margin-left: 8px !important;
+  margin-right: 8px !important;
+}
