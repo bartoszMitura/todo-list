@@ -1,38 +1,192 @@
 .kanban-container {
-  margin: 20px;
+  padding: 0;
+  width: 100%;
   
-  .kanban-board {
-    margin-top: 1rem;
+  .kanban-header {
+    margin: 20px 20px 24px 20px;
+    display: flex;
+    flex-direction: column;
+    
+    h1 {
+      margin-bottom: 8px;
+      font-size: 28px;
+      color: #333;
+      display: flex;
+      align-items: center;
+      
+      mat-icon {
+        margin-right: 12px;
+        color: #3f51b5;
+        font-size: 28px;
+        height: 28px;
+        width: 28px;
+      }
+    }
+    
+    p {
+      color: #666;
+      margin-bottom: 12px;
+      padding-left: 40px;
+    }
+    
+    .header-divider {
+      margin-top: 12px;
+      margin-bottom: 16px;
+    }
   }
   
-  .kanban-placeholder {
+  .loading-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 400px;
-    padding: 2rem;
-    text-align: center;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    
-    .large-icon {
-      font-size: 64px;
-      height: 64px;
-      width: 64px;
-      color: #ff9800;
-      margin-bottom: 1rem;
-    }
-    
-    h2 {
-      margin-bottom: 1rem;
-      color: #333;
-    }
+    height: 300px;
     
     p {
-      margin-bottom: 0.5rem;
+      margin-top: 16px;
       color: #666;
-      max-width: 500px;
     }
+  }
+  
+  .kanban-board {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding: 0 20px 20px 20px;
+    min-height: calc(100vh - 200px);
+    width: calc(100% - 40px);
+    margin: 0 auto;
+  }
+  
+  .kanban-column {
+    flex: 1 1 0;
+    min-width: 250px;
+    max-width: none;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    
+    .column-header {
+      padding: 12px 16px;
+      border-radius: 4px 4px 0 0;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      
+      mat-icon {
+        margin-right: 8px;
+      }
+      
+      h2 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 500;
+        flex-grow: 1;
+      }
+      
+      .task-count {
+        background-color: rgba(0, 0, 0, 0.1);
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+      }
+    }
+    
+    .not-started-header {
+      background-color: #e0e0e0;
+      color: #616161;
+    }
+    
+    .in-progress-header {
+      background-color: #bbdefb;
+      color: #1976d2;
+    }
+    
+    .completed-header {
+      background-color: #c8e6c9;
+      color: #388e3c;
+    }
+    
+    .delayed-header {
+      background-color: #ffecb3;
+      color: #ff8f00;
+    }
+    
+    .cancelled-header {
+      background-color: #ffcdd2;
+      color: #d32f2f;
+    }
+    
+    .column-content {
+      padding: 8px;
+      flex-grow: 1;
+      overflow-y: auto;
+      min-height: 100px;
+    }
+  }
+  
+  .task-container {
+    margin-bottom: 8px;
+    cursor: move;
+  }
+  
+  .task-placeholder {
+    text-align: center;
+    padding: 24px;
+    color: #999;
+    font-style: italic;
+    border: 2px dashed #ddd;
+    border-radius: 4px;
+  }
+  
+  .task-drag-placeholder {
+    background-color: rgba(0, 0, 0, 0.06);
+    border: 1px dashed #ccc;
+    min-height: 80px;
+    transition: transform 150ms ease;
+    border-radius: 4px;
+  }
+}
+
+// Override the default drag preview
+.cdk-drag-preview {
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15) !important;
+  opacity: 0.8;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 150ms ease;
+}
+
+.column-content.cdk-drop-list-dragging .task-container:not(.cdk-drag-placeholder) {
+  transition: transform 150ms ease;
+}
+
+/* Responsywność dla Kanban */
+@media (max-width: 1400px) {
+  .kanban-column {
+    min-width: 220px;
+  }
+}
+
+@media (max-width: 768px) {
+  .kanban-column {
+    min-width: 270px;
+  }
+  
+  .kanban-board {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    padding-bottom: 24px;
+  }
+  
+  .column-content {
+    max-height: calc(100vh - 280px);
   }
 }

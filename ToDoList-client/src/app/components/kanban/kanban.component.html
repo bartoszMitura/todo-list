@@ -1,16 +1,134 @@
-<mat-card class="kanban-container">
-  <mat-card-header>
-    <mat-card-title>Kanban Board</mat-card-title>
-    <mat-card-subtitle>Organize your tasks in a visual workflow</mat-card-subtitle>
-  </mat-card-header>
-  <mat-card-content>
-    <div class="kanban-board">
-      <div class="kanban-placeholder">
-        <mat-icon class="large-icon">dashboard</mat-icon>
-        <h2>Kanban Board Coming Soon</h2>
-        <p>This feature will allow you to organize your tasks using a drag-and-drop Kanban board.</p>
-        <p>You'll be able to move tasks between Not Started, In Progress, and Completed columns.</p>
+<div class="kanban-container">
+  <div class="kanban-header">
+    <h1><mat-icon>dashboard</mat-icon>Kanban Board</h1>
+    <p>Drag and drop tasks between columns to update their status</p>
+    <mat-divider class="header-divider"></mat-divider>
+  </div>
+  
+  <div class="loading-container" *ngIf="loading">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Loading tasks...</p>
+  </div>
+  
+  <div class="kanban-board" *ngIf="!loading">
+    <!-- Not Started Column -->
+    <div class="kanban-column">
+      <div class="column-header not-started-header">
+        <mat-icon>radio_button_unchecked</mat-icon>
+        <h2>Not Started</h2>
+        <span class="task-count">{{ notStartedTasks.length }}</span>
+      </div>
+      <div class="column-content"
+           cdkDropList
+           #notStartedList="cdkDropList"
+           id="notStarted"
+           [cdkDropListData]="notStartedTasks"
+           [cdkDropListConnectedTo]="['inProgress', 'completed', 'delayed', 'cancelled']"
+           (cdkDropListDropped)="onTaskDrop($event)">
+        <div class="task-placeholder" *ngIf="notStartedTasks.length === 0">
+          No tasks
+        </div>
+        <div class="task-container" *ngFor="let task of notStartedTasks" cdkDrag>
+          <app-task-item [todo]="task" (deleteTask)="deleteTask($event)"></app-task-item>
+          <div class="task-drag-placeholder" *cdkDragPlaceholder></div>
+        </div>
       </div>
     </div>
-  </mat-card-content>
-</mat-card>
+    
+    <!-- In Progress Column -->
+    <div class="kanban-column">
+      <div class="column-header in-progress-header">
+        <mat-icon>adjust</mat-icon>
+        <h2>In Progress</h2>
+        <span class="task-count">{{ inProgressTasks.length }}</span>
+      </div>
+      <div class="column-content"
+           cdkDropList
+           #inProgressList="cdkDropList"
+           id="inProgress"
+           [cdkDropListData]="inProgressTasks"
+           [cdkDropListConnectedTo]="['notStarted', 'completed', 'delayed', 'cancelled']"
+           (cdkDropListDropped)="onTaskDrop($event)">
+        <div class="task-placeholder" *ngIf="inProgressTasks.length === 0">
+          No tasks
+        </div>
+        <div class="task-container" *ngFor="let task of inProgressTasks" cdkDrag>
+          <app-task-item [todo]="task" (deleteTask)="deleteTask($event)"></app-task-item>
+          <div class="task-drag-placeholder" *cdkDragPlaceholder></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Completed Column -->
+    <div class="kanban-column">
+      <div class="column-header completed-header">
+        <mat-icon>check_circle</mat-icon>
+        <h2>Completed</h2>
+        <span class="task-count">{{ completedTasks.length }}</span>
+      </div>
+      <div class="column-content"
+           cdkDropList
+           #completedList="cdkDropList"
+           id="completed"
+           [cdkDropListData]="completedTasks"
+           [cdkDropListConnectedTo]="['notStarted', 'inProgress', 'delayed', 'cancelled']"
+           (cdkDropListDropped)="onTaskDrop($event)">
+        <div class="task-placeholder" *ngIf="completedTasks.length === 0">
+          No tasks
+        </div>
+        <div class="task-container" *ngFor="let task of completedTasks" cdkDrag>
+          <app-task-item [todo]="task" (deleteTask)="deleteTask($event)"></app-task-item>
+          <div class="task-drag-placeholder" *cdkDragPlaceholder></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Delayed Column -->
+    <div class="kanban-column">
+      <div class="column-header delayed-header">
+        <mat-icon>schedule</mat-icon>
+        <h2>Delayed</h2>
+        <span class="task-count">{{ delayedTasks.length }}</span>
+      </div>
+      <div class="column-content"
+           cdkDropList
+           #delayedList="cdkDropList"
+           id="delayed"
+           [cdkDropListData]="delayedTasks"
+           [cdkDropListConnectedTo]="['notStarted', 'inProgress', 'completed', 'cancelled']"
+           (cdkDropListDropped)="onTaskDrop($event)">
+        <div class="task-placeholder" *ngIf="delayedTasks.length === 0">
+          No tasks
+        </div>
+        <div class="task-container" *ngFor="let task of delayedTasks" cdkDrag>
+          <app-task-item [todo]="task" (deleteTask)="deleteTask($event)"></app-task-item>
+          <div class="task-drag-placeholder" *cdkDragPlaceholder></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Cancelled Column -->
+    <div class="kanban-column">
+      <div class="column-header cancelled-header">
+        <mat-icon>cancel</mat-icon>
+        <h2>Cancelled</h2>
+        <span class="task-count">{{ cancelledTasks.length }}</span>
+      </div>
+      <div class="column-content"
+           cdkDropList
+           #cancelledList="cdkDropList"
+           id="cancelled"
+           [cdkDropListData]="cancelledTasks"
+           [cdkDropListConnectedTo]="['notStarted', 'inProgress', 'completed', 'delayed']"
+           (cdkDropListDropped)="onTaskDrop($event)">
+        <div class="task-placeholder" *ngIf="cancelledTasks.length === 0">
+          No tasks
+        </div>
+        <div class="task-container" *ngFor="let task of cancelledTasks" cdkDrag>
+          <app-task-item [todo]="task" (deleteTask)="deleteTask($event)"></app-task-item>
+          <div class="task-drag-placeholder" *cdkDragPlaceholder></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
