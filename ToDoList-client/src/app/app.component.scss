@@ -31,6 +31,18 @@
   }
 }
 
+.add-task-button {
+  margin-top: 8px;
+  
+  mat-icon {
+    color: #4caf50;
+  }
+  
+  &.active-link mat-icon {
+    color: #3f51b5;
+  }
+}
+
 .with-sidenav {
   margin-left: 0; /* Automatically adjusted by mat-sidenav-container */
 }

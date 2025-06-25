@@ -1,0 +1,27 @@
+.warning-icon {
+  color: #f44336;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+mat-dialog-content {
+  min-width: 300px;
+  margin: 16px 0;
+  p {
+    margin: 0;
+  }
+}
+
+mat-dialog-actions {
+  padding: 8px 0;
+  
+  button {
+    min-width: 90px;
+    margin: 0 8px;
+    padding: 0 16px;
+  }
+  
+  .action-button {
+    padding: 0 24px;
+  }
+}
