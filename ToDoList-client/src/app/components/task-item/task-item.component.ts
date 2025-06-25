@@ -2,6 +2,8 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TodoItem, TaskStatus } from '../../models/todo.model';
 import { MaterialModule } from '../../material.module';
+import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-task-item',
@@ -13,9 +15,34 @@ import { MaterialModule } from '../../material.module';
 export class TaskItemComponent {
   @Input() todo!: TodoItem;
   @Output() toggleComplete = new EventEmitter<TodoItem>();
+  @Output() deleteTask = new EventEmitter<number>();
+  
+  constructor(
+    private router: Router,
+    private snackBar: MatSnackBar
+  ) {}
   
   onToggleComplete(): void {
     this.toggleComplete.emit({...this.todo, isCompleted: !this.todo.isCompleted});
+  }
+  
+  onEditTask(): void {
+    if (this.todo && this.todo.id) {
+      console.log('Editing task with ID:', this.todo.id);
+      this.router.navigate(['/task/edit', this.todo.id]);
+    } else {
+      console.error('Cannot edit task - missing ID:', this.todo);
+      this.snackBar.open('Cannot edit task: Missing task ID', 'Close', {
+        duration: 3000,
+        panelClass: 'error-snackbar'
+      });
+    }
+  }
+  
+  onDeleteTask(): void {
+    if (this.todo && this.todo.id) {
+      this.deleteTask.emit(this.todo.id);
+    }
   }
   
   getStatusClass(): string {

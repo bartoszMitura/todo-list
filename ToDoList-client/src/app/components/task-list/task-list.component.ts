@@ -74,4 +74,25 @@ export class TaskListComponent implements OnInit {
       }
     });
   }
+  
+  deleteTask(id: number): void {
+    if (confirm('Are you sure you want to delete this task?')) {
+      this.todoService.deleteTodo(id).subscribe({
+        next: () => {
+          // Remove the todo from the list
+          this.todos = this.todos.filter(t => t.id !== id);
+          this.snackBar.open('Task deleted successfully', 'Close', {
+            duration: 3000
+          });
+        },
+        error: (error) => {
+          console.error('Error deleting todo:', error);
+          this.snackBar.open('Failed to delete task', 'Close', {
+            duration: 3000,
+            panelClass: 'error-snackbar'
+          });
+        }
+      });
+    }
+  }
 }

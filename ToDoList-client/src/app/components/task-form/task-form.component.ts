@@ -51,8 +51,10 @@ export class TaskFormComponent implements OnInit {
   }
 
   loadTask(id: number): void {
+    console.log('Loading task with ID:', id);
     this.todoService.getTodo(id).subscribe({
       next: (task) => {
+        console.log('Task loaded successfully:', task);
         let startDate = null;
         let startTime = '';
         let endDate = null;
@@ -82,6 +84,8 @@ export class TaskFormComponent implements OnInit {
           status: task.status !== undefined ? task.status : 0,
           isCompleted: task.isCompleted
         });
+        
+        console.log('Form values after patch:', this.taskForm.value);
       },
       error: (error) => {
         console.error('Error loading task:', error);
@@ -128,6 +132,7 @@ export class TaskFormComponent implements OnInit {
       }
     }
 
+    // Create task data object
     const taskData: TodoItem = {
       title: this.taskForm.value.title,
       isCompleted: this.taskForm.value.isCompleted,
@@ -137,12 +142,19 @@ export class TaskFormComponent implements OnInit {
       status: this.taskForm.value.status
     };
 
+    // If editing, include the ID in the payload
+    if (this.isEdit && this.taskId) {
+      taskData.id = this.taskId;
+    }
+
     this.submitting = true;
 
     if (this.isEdit && this.taskId) {
       // Update existing task
+      console.log('Updating task with ID', this.taskId, 'Payload:', taskData);
       this.todoService.updateTodo(this.taskId, taskData).subscribe({
-        next: () => {
+        next: (response) => {
+          console.log('Task update success:', response);
           this.submitting = false;
           this.snackBar.open('Task updated successfully', 'Close', {
             duration: 3000,
@@ -151,9 +163,10 @@ export class TaskFormComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error updating task:', error);
+          console.error('Request payload was:', JSON.stringify(taskData));
           this.submitting = false;
-          this.snackBar.open('Failed to update task', 'Close', {
-            duration: 3000,
+          this.snackBar.open(`Failed to update task: ${error.status} ${error.statusText}`, 'Close', {
+            duration: 5000,
             panelClass: 'error-snackbar'
           });
         }

@@ -21,6 +21,7 @@
             *ngFor="let todo of todos" 
             [todo]="todo"
             (toggleComplete)="updateTaskStatus($event)"
+            (deleteTask)="deleteTask($event)"
             class="task-list-item">
           </app-task-item>
         </div>

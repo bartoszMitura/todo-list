@@ -29,6 +29,7 @@ export class TodoService {
 
   // Update an existing todo
   updateTodo(id: number, todo: TodoItem): Observable<any> {
+    console.log(`Sending PUT request to ${this.apiUrl}/${id}`, todo);
     return this.http.put(`${this.apiUrl}/${id}`, todo);
   }
 

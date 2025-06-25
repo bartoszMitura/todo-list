@@ -24,6 +24,16 @@
     margin-right: 16px;
     cursor: pointer;
   }
+  
+  .task-menu-button {
+    margin-left: 8px;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+    
+    &:hover {
+      opacity: 1;
+    }
+  }
 }
 
 .task-title {
