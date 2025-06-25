@@ -6,6 +6,7 @@ import { TaskListComponent } from './components/task-list/task-list.component';
 import { CalendarComponent } from './components/calendar/calendar.component';
 import { KanbanComponent } from './components/kanban/kanban.component';
 import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
+import { TaskFormComponent } from './components/task-form/task-form.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -15,6 +16,16 @@ export const routes: Routes = [
   { 
     path: '', 
     component: TaskListComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'task/add',
+    component: TaskFormComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'task/edit/:id',
+    component: TaskFormComponent,
     canActivate: [authGuard]
   },
   { 

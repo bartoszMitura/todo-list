@@ -1,0 +1,79 @@
+<div class="task-form-container">
+  <mat-card class="task-form-card">
+    <mat-card-header>
+      <div mat-card-avatar>
+        <mat-icon class="header-icon">{{ isEdit ? 'edit' : 'add_task' }}</mat-icon>
+      </div>
+      <mat-card-title>{{ isEdit ? 'Edit Task' : 'Add New Task' }}</mat-card-title>
+      <mat-card-subtitle>{{ isEdit ? 'Update task details' : 'Create a new task' }}</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="task-form">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Task Title</mat-label>
+            <input matInput formControlName="title" placeholder="What needs to be done?">
+            <mat-icon matPrefix>edit</mat-icon>
+            <mat-error *ngIf="taskForm.controls['title'].errors?.['required']">
+              Title is required
+            </mat-error>
+            <mat-error *ngIf="taskForm.controls['title'].errors?.['minlength']">
+              Title must be at least 3 characters
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Start Date & Time</mat-label>
+            <input matInput [matDatepicker]="startPicker" formControlName="startTime">
+            <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+            <mat-datepicker #startPicker></mat-datepicker>
+            <mat-icon matPrefix>event</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>End Date & Time</mat-label>
+            <input matInput [matDatepicker]="endPicker" formControlName="endTime">
+            <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+            <mat-datepicker #endPicker></mat-datepicker>
+            <mat-icon matPrefix>event</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Category</mat-label>
+            <input matInput formControlName="category" placeholder="Task category">
+            <mat-icon matPrefix>category</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="status">
+              <mat-option [value]="0">Not Started</mat-option>
+              <mat-option [value]="1">In Progress</mat-option>
+              <mat-option [value]="2">Completed</mat-option>
+              <mat-option [value]="3">Delayed</mat-option>
+              <mat-option [value]="4">Cancelled</mat-option>
+            </mat-select>
+            <mat-icon matPrefix>flag</mat-icon>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-actions">
+          <button mat-stroked-button type="button" (click)="goBack()">
+            <mat-icon>arrow_back</mat-icon>
+            Cancel
+          </button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="submitting || taskForm.invalid">
+            <mat-icon>{{ isEdit ? 'save' : 'add' }}</mat-icon>
+            <span *ngIf="!submitting">{{ isEdit ? 'Save Changes' : 'Add Task' }}</span>
+            <mat-spinner *ngIf="submitting" diameter="20" class="spinner"></mat-spinner>
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
