@@ -29,8 +29,10 @@ export class TaskFormComponent implements OnInit {
   ) {
     this.taskForm = this.formBuilder.group({
       title: ['', [Validators.required, Validators.minLength(3)]],
-      startTime: [null],
-      endTime: [null],
+      startDate: [null],
+      startTime: [''],
+      endDate: [null],
+      endTime: [''],
       category: [''],
       status: [0], // Default to "Not Started"
       isCompleted: [false]
@@ -51,10 +53,31 @@ export class TaskFormComponent implements OnInit {
   loadTask(id: number): void {
     this.todoService.getTodo(id).subscribe({
       next: (task) => {
+        let startDate = null;
+        let startTime = '';
+        let endDate = null;
+        let endTime = '';
+        
+        // Handle start time
+        if (task.startTime) {
+          const startDateTime = new Date(task.startTime);
+          startDate = startDateTime;
+          startTime = this.formatTimeForInput(startDateTime);
+        }
+        
+        // Handle end time
+        if (task.endTime) {
+          const endDateTime = new Date(task.endTime);
+          endDate = endDateTime;
+          endTime = this.formatTimeForInput(endDateTime);
+        }
+        
         this.taskForm.patchValue({
           title: task.title,
-          startTime: task.startTime,
-          endTime: task.endTime,
+          startDate: startDate,
+          startTime: startTime,
+          endDate: endDate,
+          endTime: endTime,
           category: task.category || '',
           status: task.status !== undefined ? task.status : 0,
           isCompleted: task.isCompleted
@@ -70,6 +93,12 @@ export class TaskFormComponent implements OnInit {
       }
     });
   }
+  
+  // Helper method to format time as HH:MM for input[type=time]
+  private formatTimeForInput(date: Date): string {
+    return date.getHours().toString().padStart(2, '0') + ':' + 
+           date.getMinutes().toString().padStart(2, '0');
+  }
 
   saveTask(): void {
     // Stop if form is invalid
@@ -77,11 +106,33 @@ export class TaskFormComponent implements OnInit {
       return;
     }
 
+    // Combine date and time for start time
+    let startDateTime: Date | undefined = undefined;
+    if (this.taskForm.value.startDate) {
+      startDateTime = new Date(this.taskForm.value.startDate);
+      
+      if (this.taskForm.value.startTime) {
+        const [hours, minutes] = this.taskForm.value.startTime.split(':').map(Number);
+        startDateTime.setHours(hours, minutes);
+      }
+    }
+
+    // Combine date and time for end time
+    let endDateTime: Date | undefined = undefined;
+    if (this.taskForm.value.endDate) {
+      endDateTime = new Date(this.taskForm.value.endDate);
+      
+      if (this.taskForm.value.endTime) {
+        const [hours, minutes] = this.taskForm.value.endTime.split(':').map(Number);
+        endDateTime.setHours(hours, minutes);
+      }
+    }
+
     const taskData: TodoItem = {
       title: this.taskForm.value.title,
       isCompleted: this.taskForm.value.isCompleted,
-      startTime: this.taskForm.value.startTime ? new Date(this.taskForm.value.startTime) : undefined,
-      endTime: this.taskForm.value.endTime ? new Date(this.taskForm.value.endTime) : undefined,
+      startTime: startDateTime,
+      endTime: endDateTime,
       category: this.taskForm.value.category || '',
       status: this.taskForm.value.status
     };
