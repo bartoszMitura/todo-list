@@ -14,17 +14,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class TaskItemComponent {
   @Input() todo!: TodoItem;
-  @Output() toggleComplete = new EventEmitter<TodoItem>();
   @Output() deleteTask = new EventEmitter<number>();
   
   constructor(
     private router: Router,
     private snackBar: MatSnackBar
   ) {}
-  
-  onToggleComplete(): void {
-    this.toggleComplete.emit({...this.todo, isCompleted: !this.todo.isCompleted});
-  }
   
   onEditTask(): void {
     if (this.todo && this.todo.id) {

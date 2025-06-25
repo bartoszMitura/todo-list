@@ -1,9 +1,6 @@
 <div class="task-item">
   <div class="task-header">
-    <mat-icon [ngClass]="{'completed-icon': todo.isCompleted}" (click)="onToggleComplete()">
-      {{ todo.isCompleted ? 'check_circle' : 'radio_button_unchecked' }}
-    </mat-icon>
-    <div class="task-title" [ngClass]="{'completed-text': todo.isCompleted}">{{ todo.title }}</div>
+    <div class="task-title">{{ todo.title }}</div>
     <div class="task-status" [ngClass]="getStatusClass()">
       {{ todo.status === 0 ? 'Not Started' : 
          todo.status === 1 ? 'In Progress' : 

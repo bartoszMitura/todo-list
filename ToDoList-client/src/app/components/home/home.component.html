@@ -91,7 +91,6 @@
           <app-task-item 
             *ngFor="let todo of todos" 
             [todo]="todo"
-            (toggleComplete)="updateTaskStatus($event)"
             class="task-list-item">
           </app-task-item>
         </div>

@@ -54,29 +54,7 @@ export class TaskListComponent implements OnInit {
     });
   }
   
-  updateTaskStatus(todo: TodoItem): void {
-    this.todoService.updateTodo(todo.id!, todo).subscribe({
-      next: () => {
-        // Update the todo in the list
-        const index = this.todos.findIndex(t => t.id === todo.id);
-        if (index !== -1) {
-          this.todos[index] = todo;
-        }
-        this.snackBar.open(
-          `Task marked as ${todo.isCompleted ? 'completed' : 'active'}`, 
-          'Close', 
-          { duration: 3000 }
-        );
-      },
-      error: (error) => {
-        console.error('Error updating todo:', error);
-        this.snackBar.open('Failed to update task status', 'Close', {
-          duration: 3000,
-          panelClass: 'error-snackbar'
-        });
-      }
-    });
-  }
+  // Task status is now updated only through the edit form
   
   deleteTask(id: number): void {
     // Open confirmation dialog
