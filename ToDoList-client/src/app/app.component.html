@@ -35,7 +35,7 @@
 
   <!-- Main Content -->
   <mat-sidenav-content [ngClass]="{'with-sidenav': isLoggedIn}">
-    <div class="container" [ngClass]="{'kanban-container': isKanbanView}">
+    <div class="container" [ngClass]="{'full-width-container': isFullWidthView}">
       <router-outlet />
     </div>
   </mat-sidenav-content>

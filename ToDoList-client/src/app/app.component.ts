@@ -22,7 +22,7 @@ import { filter } from 'rxjs/operators';
 })
 export class AppComponent implements OnInit {
   title = 'ToDoList-client';
-  isKanbanView = false;
+  isFullWidthView = false;
   
   constructor(
     public authService: AuthService,
@@ -30,11 +30,11 @@ export class AppComponent implements OnInit {
   ) {}
   
   ngOnInit() {
-    // Track router events to detect when we're on the Kanban view
+    // Track router events to detect when we're on the Kanban or Calendar view
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
-      this.isKanbanView = event.url === '/kanban';
+      this.isFullWidthView = event.url === '/kanban' || event.url === '/calendar';
     });
   }
   

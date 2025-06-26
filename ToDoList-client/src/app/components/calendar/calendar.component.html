@@ -1,14 +1,119 @@
-<mat-card class="calendar-container">
-  <mat-card-header>
-    <mat-card-title>Calendar View</mat-card-title>
-    <mat-card-subtitle>Your tasks in calendar format</mat-card-subtitle>
-  </mat-card-header>
-  <mat-card-content>
-    <div class="calendar-placeholder">
-      <mat-icon class="large-icon">calendar_month</mat-icon>
-      <h2>Calendar View</h2>
-      <p>This feature will be implemented soon.</p>
-      <p>You'll be able to see your tasks in a calendar format, organized by date and time.</p>
+<div class="calendar-container">
+  <div class="calendar-header">
+    <h1><mat-icon>calendar_month</mat-icon>Calendar View</h1>
+    <p>Your tasks organized by date</p>
+    <mat-divider class="header-divider"></mat-divider>
+  </div>
+  
+  <div class="loading-container" *ngIf="loading">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Loading tasks...</p>
+  </div>
+
+  <div class="calendar-wrapper" *ngIf="!loading">
+    <div class="calendar-controls">
+      <button mat-icon-button (click)="previousMonth()" matTooltip="Previous Month">
+        <mat-icon>navigate_before</mat-icon>
+      </button>
+      <h2 class="current-month">{{ monthNames[currentDate.getMonth()] }} {{ currentDate.getFullYear() }}</h2>
+      <button mat-icon-button (click)="nextMonth()" matTooltip="Next Month">
+        <mat-icon>navigate_next</mat-icon>
+      </button>
+      <button mat-stroked-button color="primary" (click)="currentMonth()" class="today-button">
+        <mat-icon>today</mat-icon>
+        Today
+      </button>
+      <button mat-raised-button color="primary" (click)="addTask()" class="add-button">
+        <mat-icon>add</mat-icon>
+        Add Task
+      </button>
     </div>
-  </mat-card-content>
-</mat-card>
+    
+    <div class="calendar-grid">
+      <div class="weekday-header">
+        <div class="weekday" *ngFor="let day of weekdays">
+          {{ day.substring(0, 3) }}
+        </div>
+      </div>
+      
+      <div class="calendar-body">
+        <div class="calendar-week" *ngFor="let week of calendarWeeks">
+          <div class="calendar-day" 
+               *ngFor="let day of week.days" 
+               [ngClass]="{
+                 'other-month': !day.isCurrentMonth,
+                 'today': day.isToday
+               }">
+            <div class="day-header">
+              {{ day.date.getDate() }}
+            </div>
+            <div class="day-tasks" *ngIf="day.tasks.length > 0">
+              <div class="task-item" 
+                   *ngFor="let task of day.tasks.slice(0, 3)" 
+                   [ngClass]="getTaskStatusClass(task.status)"
+                   (click)="showTaskDetails(task)">
+                <div class="task-time" *ngIf="task.startTime">
+                  {{ task.startTime | date:'HH:mm' }}
+                </div>
+                <div class="task-title">{{ task.title }}</div>
+              </div>
+              <div class="more-tasks" *ngIf="day.tasks.length > 3">
+                +{{ day.tasks.length - 3 }} more
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Task Detail Dialog -->
+  <div class="task-details-overlay" *ngIf="selectedTask" (click)="closeTaskDetails()">
+    <div class="task-details-panel" (click)="$event.stopPropagation()">
+      <div class="task-details-header" [ngClass]="getTaskStatusClass(selectedTask.status)">
+        <h2>{{ selectedTask.title }}</h2>
+        <div class="task-actions">
+          <button mat-icon-button (click)="editTask(selectedTask.id)" matTooltip="Edit Task">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="deleteTask(selectedTask.id)" matTooltip="Delete Task">
+            <mat-icon>delete</mat-icon>
+          </button>
+          <button mat-icon-button (click)="closeTaskDetails()" matTooltip="Close">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </div>
+      
+      <div class="task-details-content">
+        <div class="task-status-badge" [ngClass]="getTaskStatusClass(selectedTask.status)">
+          {{ selectedTask.status === 0 ? 'Not Started' : 
+             selectedTask.status === 1 ? 'In Progress' : 
+             selectedTask.status === 2 ? 'Completed' : 
+             selectedTask.status === 3 ? 'Delayed' : 
+             selectedTask.status === 4 ? 'Cancelled' : 'Unknown' }}
+        </div>
+        
+        <div class="task-detail-item" *ngIf="selectedTask.category">
+          <mat-icon>category</mat-icon>
+          <span>{{ selectedTask.category }}</span>
+        </div>
+        
+        <div class="task-detail-item" *ngIf="selectedTask.startTime">
+          <mat-icon>play_circle</mat-icon>
+          <span>Start: {{ selectedTask.startTime | date:'medium' }}</span>
+        </div>
+        
+        <div class="task-detail-item" *ngIf="selectedTask.endTime">
+          <mat-icon>stop_circle</mat-icon>
+          <span>End: {{ selectedTask.endTime | date:'medium' }}</span>
+        </div>
+        
+        <div class="task-detail-item" *ngIf="selectedTask.createdAt">
+          <mat-icon>event_note</mat-icon>
+          <span>Created: {{ selectedTask.createdAt | date:'medium' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
