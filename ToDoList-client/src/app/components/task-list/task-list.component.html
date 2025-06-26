@@ -1,28 +1,122 @@
 <div class="task-list-container">
   <mat-card class="task-list-card">
     <mat-card-content>
-      <!-- Task List -->
+      <!-- Panel sortowania i filtrowania -->
+      <div class="filter-sort-panel">
+        <div class="filter-group">
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Status</mat-label>
+            <mat-select [(ngModel)]="filterStatus" (selectionChange)="onFilterChange()">
+              <mat-option value="">All</mat-option>
+              <mat-option [value]="0">Not Started</mat-option>
+              <mat-option [value]="1">In Progress</mat-option>
+              <mat-option [value]="2">Completed</mat-option>
+              <mat-option [value]="3">Delayed</mat-option>
+              <mat-option [value]="4">Cancelled</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Start Date</mat-label>
+            <input matInput [matDatepicker]="startPicker" [(ngModel)]="filterStart" (dateChange)="onFilterChange()">
+            <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+            <mat-datepicker #startPicker></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>End Date</mat-label>
+            <input matInput [matDatepicker]="endPicker" [(ngModel)]="filterEnd" (dateChange)="onFilterChange()">
+            <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+            <mat-datepicker #endPicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="quick-filters">
+          <button mat-stroked-button color="primary" (click)="filterToday = !filterToday; filterTomorrow = false; onFilterChange()" [color]="filterToday ? 'accent' : undefined">Dzisiaj</button>
+          <button mat-stroked-button color="primary" (click)="filterTomorrow = !filterTomorrow; filterToday = false; onFilterChange()" [color]="filterTomorrow ? 'accent' : undefined">Jutro</button>
+          <button mat-button (click)="clearFilters()">Wyczyść</button>
+        </div>
+      </div>
+      <!-- Task List Table -->
       <div class="tasks-container">
         <h2><mat-icon>list</mat-icon> Your Tasks</h2>
         <mat-divider></mat-divider>
-        
         <div *ngIf="loading" class="loading-container">
           <mat-spinner diameter="40"></mat-spinner>
           <p>Loading tasks...</p>
         </div>
-        
         <div *ngIf="!loading && todos.length === 0" class="empty-state">
           <mat-icon class="large-icon">checklist</mat-icon>
-          <p>You don't have any tasks yet. Click "Add New Task" to create one!</p>
+          <p>No tasks found for selected filters.</p>
         </div>
-        
-        <div *ngIf="!loading && todos.length > 0" class="task-list">
-          <app-task-item 
-            *ngFor="let todo of todos" 
-            [todo]="todo"
-            (deleteTask)="deleteTask($event)"
-            class="task-list-item">
-          </app-task-item>
+        <div *ngIf="!loading && todos.length > 0" class="mat-table-responsive">
+          <table mat-table [dataSource]="todos" class="mat-elevation-z2" multiTemplateDataRows>
+            <!-- Title Column -->
+            <ng-container matColumnDef="title">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header="title" (click)="onSortChange('title')" class="sortable">
+                Title
+              </th>
+              <td mat-cell *matCellDef="let todo">{{todo.title}}</td>
+            </ng-container>
+            <!-- Category Column -->
+            <ng-container matColumnDef="category">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header="category" (click)="onSortChange('category')" class="sortable">
+                Category
+              </th>
+              <td mat-cell *matCellDef="let todo">{{todo.category || '-'}}
+              </td>
+            </ng-container>
+            <!-- Status Column -->
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header="status" (click)="onSortChange('status')" class="sortable">
+                Status
+              </th>
+              <td mat-cell *matCellDef="let todo">
+                <span [ngSwitch]="todo.status">
+                  <span *ngSwitchCase="0">Not Started</span>
+                  <span *ngSwitchCase="1">In Progress</span>
+                  <span *ngSwitchCase="2">Completed</span>
+                  <span *ngSwitchCase="3">Delayed</span>
+                  <span *ngSwitchCase="4">Cancelled</span>
+                  <span *ngSwitchDefault>-</span>
+                </span>
+              </td>
+            </ng-container>
+            <!-- Start Time Column -->
+            <ng-container matColumnDef="startTime">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header="startTime" (click)="onSortChange('startTime')" class="sortable">
+                Start
+              </th>
+              <td mat-cell *matCellDef="let todo">{{todo.startTime | date:'short'}}</td>
+            </ng-container>
+            <!-- End Time Column -->
+            <ng-container matColumnDef="endTime">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header="endTime" (click)="onSortChange('endTime')" class="sortable">
+                End
+              </th>
+              <td mat-cell *matCellDef="let todo">
+                {{todo.endTime | date:'short'}}
+              </td>
+            </ng-container>
+            <!-- Menu Column -->
+            <ng-container matColumnDef="menu">
+              <th mat-header-cell *matHeaderCellDef style="width:48px; text-align:right;"></th>
+              <td mat-cell *matCellDef="let todo" style="text-align:right;">
+                <button mat-icon-button [matMenuTriggerFor]="menu" class="task-menu-button" aria-label="Task actions">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item [routerLink]="['/tasks', todo.id, 'edit']">
+                    <mat-icon>edit</mat-icon>
+                    <span>Edit</span>
+                  </button>
+                  <button mat-menu-item (click)="deleteTask(todo.id)">
+                    <mat-icon>delete</mat-icon>
+                    <span>Delete</span>
+                  </button>
+                </mat-menu>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
         </div>
       </div>
     </mat-card-content>

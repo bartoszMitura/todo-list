@@ -3,24 +3,38 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { MaterialModule } from '../../material.module';
 import { TodoService } from '../../services/todo.service';
-import { TodoItem } from '../../models/todo.model';
+import { TodoItem, TaskStatus } from '../../models/todo.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TaskItemComponent } from '../task-item/task-item.component';
 import { RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [CommonModule, MaterialModule, RouterLink, TaskItemComponent],
+  imports: [CommonModule, MaterialModule, RouterLink, TaskItemComponent, FormsModule],
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.scss']
 })
 export class TaskListComponent implements OnInit {
   todos: TodoItem[] = [];
   loading = false;
-  
+
+  // Material table columns
+  displayedColumns: string[] = ['title', 'category', 'status', 'startTime', 'endTime', 'menu'];
+
+  // Filtering
+  filterStatus: TaskStatus | '' = '';
+  filterStart: Date | null = null;
+  filterEnd: Date | null = null;
+  filterToday = false;
+  filterTomorrow = false;
+  // Sorting
+  sortField: 'startTime' | 'endTime' | 'category' | 'title' | 'status' = 'startTime';
+  sortDirection: 'asc' | 'desc' = 'asc';
+
   constructor(
     private authService: AuthService,
     private todoService: TodoService,
@@ -36,15 +50,60 @@ export class TaskListComponent implements OnInit {
     return this.authService.currentUserValue?.username;
   }
 
+  buildODataQuery(): string {
+    const filters: string[] = [];
+    let orderBy = '';
+    // Filtrowanie po statusie
+    if (this.filterStatus !== '') {
+      filters.push(`status eq ${this.filterStatus}`);
+    }
+    // Filtrowanie po dacie (zakres)
+    if (this.filterStart) {
+      const start = this.filterStart.toISOString();
+      filters.push(`startTime ge ${start}`);
+    }
+    if (this.filterEnd) {
+      const end = this.filterEnd.toISOString();
+      filters.push(`endTime le ${end}`);
+    }
+    // Filtr dzisiaj
+    if (this.filterToday) {
+      const today = new Date(); today.setHours(0,0,0,0);
+      const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
+      filters.push(`startTime ge ${today.toISOString()} and startTime lt ${tomorrow.toISOString()}`);
+    }
+    // Filtr jutro
+    if (this.filterTomorrow) {
+      const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1); tomorrow.setHours(0,0,0,0);
+      const dayAfter = new Date(tomorrow); dayAfter.setDate(tomorrow.getDate() + 1);
+      filters.push(`startTime ge ${tomorrow.toISOString()} and startTime lt ${dayAfter.toISOString()}`);
+    }
+    // Sortowanie
+    if (this.sortField) {
+      orderBy = `$orderby=${this.sortField} ${this.sortDirection}`;
+    }
+    let query = '?';
+    if (filters.length > 0) {
+      query += `$filter=${filters.join(' and ')}&`;
+    }
+    if (orderBy) {
+      query += orderBy;
+    }
+    if (query.endsWith('&') || query.endsWith('?')) {
+      query = query.slice(0, -1);
+    }
+    return query;
+  }
+
   loadTodos(): void {
     this.loading = true;
-    this.todoService.getTodos().subscribe({
+    const odataQuery = this.buildODataQuery();
+    this.todoService.getTodosOData(odataQuery).subscribe({
       next: (data) => {
         this.todos = data;
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error loading todos:', error);
         this.loading = false;
         this.snackBar.open('Failed to load tasks', 'Close', {
           duration: 3000,
@@ -53,9 +112,34 @@ export class TaskListComponent implements OnInit {
       }
     });
   }
-  
-  // Task status is now updated only through the edit form
-  
+
+  applyFiltersAndSort(): void {
+    this.loadTodos();
+  }
+
+  onSortChange(field: 'startTime' | 'endTime' | 'category' | 'title' | 'status') {
+    if (this.sortField === field) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortField = field;
+      this.sortDirection = 'asc';
+    }
+    this.applyFiltersAndSort();
+  }
+
+  onFilterChange() {
+    this.applyFiltersAndSort();
+  }
+
+  clearFilters() {
+    this.filterStatus = '';
+    this.filterStart = null;
+    this.filterEnd = null;
+    this.filterToday = false;
+    this.filterTomorrow = false;
+    this.applyFiltersAndSort();
+  }
+
   deleteTask(id: number): void {
     // Open confirmation dialog
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
@@ -75,8 +159,8 @@ export class TaskListComponent implements OnInit {
       if (result === true) {
         this.todoService.deleteTodo(id).subscribe({
           next: () => {
-            // Remove the todo from the list
             this.todos = this.todos.filter(t => t.id !== id);
+            this.applyFiltersAndSort();
             this.snackBar.open('Task deleted successfully', 'Close', {
               duration: 3000
             });

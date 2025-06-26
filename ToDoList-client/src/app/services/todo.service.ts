@@ -37,4 +37,9 @@ export class TodoService {
   deleteTodo(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
+
+  // Get todos with OData query
+  getTodosOData(odataQuery: string): Observable<TodoItem[]> {
+    return this.http.get<TodoItem[]>(`${this.apiUrl}/odata${odataQuery}`);
+  }
 }
