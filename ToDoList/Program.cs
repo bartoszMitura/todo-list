@@ -15,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddControllers().AddOData(opt =>
 {
-    opt.Select().Filter().OrderBy().Count().Expand();
+    opt.Select().Filter().OrderBy().Count().Expand().SetMaxTop(500).TimeZone = TimeZoneInfo.Utc;
 });
 
 // Add CORS policy
