@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.OData.Query;
 using ToDoList.Data;
 using ToDoList.Models;
 using ToDoList.Models.Auth;
@@ -52,6 +53,17 @@ namespace ToDoList.Controllers
                 return NotFound();
 
             return todoItem;
+        }
+
+        // GET: api/Todo/odata
+        [HttpGet("odata")]
+        [EnableQuery]
+        public IQueryable<TodoItem> GetTodoItemsOData()
+        {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+                return Enumerable.Empty<TodoItem>().AsQueryable();
+            return _context.TodoItems.Where(item => item.UserId == userId);
         }
 
         // PUT: api/Todo/5

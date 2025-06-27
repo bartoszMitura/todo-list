@@ -6,13 +6,17 @@ using Microsoft.IdentityModel.Tokens;
 using ToDoList.Data;
 using ToDoList.Models.Auth;
 using ToDoList.Services;
+using Microsoft.AspNetCore.OData;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddOData(opt =>
+{
+    opt.Select().Filter().OrderBy().Count().Expand().SetMaxTop(500).TimeZone = TimeZoneInfo.Utc;
+});
 
 // Add CORS policy
 builder.Services.AddCors(options =>
@@ -154,6 +158,7 @@ app.UseAuthorization();
 
 // Add endpoint routing
 app.MapControllers();
+app.MapControllers().RequireCors("AllowAll");
 
 var summaries = new[]
 {

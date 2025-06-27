@@ -1,7 +1,47 @@
 <div class="kanban-container">
   <div class="kanban-header">
-    <h1><mat-icon>dashboard</mat-icon>Kanban Board</h1>
+    <div class="header-title-row">
+      <h1><mat-icon>dashboard</mat-icon>Kanban Board</h1>
+      <button mat-icon-button color="primary" (click)="toggleFilters()" matTooltip="{{filtersVisible ? 'Hide filters' : 'Show filters'}}">
+        <mat-icon>{{filtersVisible ? 'filter_list_off' : 'filter_list'}}</mat-icon>
+      </button>
+    </div>
     <p>Drag and drop tasks between columns to update their status</p>
+    
+    <!-- Date Filters - visible only when toggled -->
+    <div class="filter-toolbar" *ngIf="filtersVisible">
+      <div class="filter-buttons">
+        <mat-form-field appearance="outline" class="filter-select">
+          <mat-label>Period</mat-label>
+          <mat-select [(value)]="dateFilterType" (selectionChange)="onDateFilterChange($event.value)">
+            <mat-option value="all">All</mat-option>
+            <mat-option value="today">Today</mat-option>
+            <mat-option value="tomorrow">Tomorrow</mat-option>
+            <mat-option value="custom">Custom</mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <button mat-button color="primary" class="compact-button" (click)="clearFilters()">Clear</button>
+      </div>
+    </div>
+    
+    <!-- Custom Date Range - only visible when custom date range is selected and filters are visible -->
+    <div *ngIf="filtersVisible && dateFilterType === 'custom'" class="date-range-container">
+      <mat-form-field appearance="outline" class="date-field">
+        <mat-label>From</mat-label>
+        <input matInput [matDatepicker]="startPicker" [(ngModel)]="filterStart" (dateChange)="onFilterChange()">
+        <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+        <mat-datepicker #startPicker></mat-datepicker>
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline" class="date-field">
+        <mat-label>To</mat-label>
+        <input matInput [matDatepicker]="endPicker" [(ngModel)]="filterEnd" (dateChange)="onFilterChange()">
+        <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
+        <mat-datepicker #endPicker></mat-datepicker>
+      </mat-form-field>
+    </div>
+    
     <mat-divider class="header-divider"></mat-divider>
   </div>
   
