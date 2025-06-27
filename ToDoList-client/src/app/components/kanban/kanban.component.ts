@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '../../material.module';
 import { TodoService } from '../../services/todo.service';
 import { TodoItem, TaskStatus } from '../../models/todo.model';
@@ -12,7 +13,7 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
 @Component({
   selector: 'app-kanban',
   standalone: true,
-  imports: [CommonModule, MaterialModule, TaskItemComponent],
+  imports: [CommonModule, FormsModule, MaterialModule, TaskItemComponent],
   templateUrl: './kanban.component.html',
   styleUrls: ['./kanban.component.scss']
 })
@@ -23,6 +24,9 @@ export class KanbanComponent implements OnInit {
   delayedTasks: TodoItem[] = [];
   cancelledTasks: TodoItem[] = [];
   
+  // All tasks before filtering
+  allTasks: TodoItem[] = [];
+  
   loading = false;
   statusMap = new Map<string, TaskStatus>([
     ['notStarted', TaskStatus.NotStarted],
@@ -31,6 +35,16 @@ export class KanbanComponent implements OnInit {
     ['delayed', TaskStatus.Delayed],
     ['cancelled', TaskStatus.Cancelled]
   ]);
+  
+  // Filter visibility
+  filtersVisible: boolean = false;
+
+  // Date filter type
+  dateFilterType: 'all' | 'today' | 'tomorrow' | 'custom' = 'all';
+
+  // Filter dates
+  filterStart: Date | null = null;
+  filterEnd: Date | null = null;
   
   constructor(
     private todoService: TodoService,
@@ -46,7 +60,8 @@ export class KanbanComponent implements OnInit {
     this.loading = true;
     this.todoService.getTodos().subscribe({
       next: (tasks) => {
-        this.categorizeTasksByStatus(tasks);
+        this.allTasks = tasks;
+        this.applyFilters();
         this.loading = false;
       },
       error: (error) => {
@@ -66,6 +81,104 @@ export class KanbanComponent implements OnInit {
     this.completedTasks = tasks.filter(t => t.status === TaskStatus.Completed);
     this.delayedTasks = tasks.filter(t => t.status === TaskStatus.Delayed);
     this.cancelledTasks = tasks.filter(t => t.status === TaskStatus.Cancelled);
+  }
+  
+  // Toggle filters visibility
+  toggleFilters(): void {
+    this.filtersVisible = !this.filtersVisible;
+  }
+  
+  // Apply filters based on date selection
+  applyFilters(): void {
+    let filteredTasks = [...this.allTasks];
+    
+    // Apply date filtering
+    if (this.dateFilterType !== 'all') {
+      filteredTasks = this.filterDatesByType(filteredTasks);
+    }
+    
+    this.categorizeTasksByStatus(filteredTasks);
+  }
+  
+  // Filter tasks by date type
+  filterDatesByType(tasks: TodoItem[]): TodoItem[] {
+    if (this.dateFilterType === 'today') {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+      
+      return tasks.filter(task => {
+        if (!task.startTime) return false;
+        const taskDate = new Date(task.startTime);
+        return taskDate >= today && taskDate < tomorrow;
+      });
+    } 
+    else if (this.dateFilterType === 'tomorrow') {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(0, 0, 0, 0);
+      
+      const dayAfter = new Date(tomorrow);
+      dayAfter.setDate(tomorrow.getDate() + 1);
+      
+      return tasks.filter(task => {
+        if (!task.startTime) return false;
+        const taskDate = new Date(task.startTime);
+        return taskDate >= tomorrow && taskDate < dayAfter;
+      });
+    }
+    else if (this.dateFilterType === 'custom') {
+      return tasks.filter(task => {
+        if (this.filterStart) {
+          const start = new Date(this.filterStart);
+          start.setHours(0, 0, 0, 0);
+          
+          if (!task.startTime || new Date(task.startTime) < start) {
+            return false;
+          }
+        }
+        
+        if (this.filterEnd) {
+          const end = new Date(this.filterEnd);
+          end.setHours(23, 59, 59, 999);
+          
+          if (!task.endTime || new Date(task.endTime) > end) {
+            return false;
+          }
+        }
+        
+        return true;
+      });
+    }
+    
+    return tasks;
+  }
+  
+  // Date filter change handler
+  onDateFilterChange(type: 'all' | 'today' | 'tomorrow' | 'custom'): void {
+    this.dateFilterType = type;
+    
+    // Reset custom dates when not in custom mode
+    if (type !== 'custom') {
+      this.filterStart = null;
+      this.filterEnd = null;
+    }
+    
+    this.applyFilters();
+  }
+  
+  // General filter change handler
+  onFilterChange(): void {
+    this.applyFilters();
+  }
+  
+  // Clear all filters
+  clearFilters(): void {
+    this.dateFilterType = 'all';
+    this.filterStart = null;
+    this.filterEnd = null;
+    this.applyFilters();
   }
   
   onTaskDrop(event: CdkDragDrop<TodoItem[]>): void {
